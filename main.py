@@ -51,6 +51,7 @@ def inGhe(danhSachGhe):
         -------------------------------
         """
         print(s)
+        return 0
     else:
         print(" "*((m-14)//2)+"---MÀN HÌNH---"+" "*((m-14)//2))
         print('-'*m)
@@ -64,6 +65,7 @@ def inGhe(danhSachGhe):
             if i % n == (n-1):
                 print("|")
         print('-'*m)
+        return 1
 def getRoomByFilmNameAndTimeAndRoomName(film_name, time_start, room_name):
     roomList = []
     for thoiGianPhongChieu in danhSachThoiGianPhongChieu:
@@ -418,32 +420,34 @@ while select != 0:
                     sc = input("Nhập Suất Chiếu Bạn Muốn: ")
                     if isInteger(sc) and int(sc) in range(1, len(rooms) + 1):
                         print("\n")
-                        inGhe(rooms[int(sc) - 1].gheNgoi) #Chưa có check
-                        choNgoi = input("Nhập Chỗ Ngồi: ").upper()
-                        checkGhe = False
-                        #Hàm
-                        for gh in rooms[int(sc) - 1].gheNgoi:
-                            if choNgoi == gh.maGhe and gh.trangThai == 0:
-                                gh.trangThai = 1
-                                checkGhe = True
-                                break
-                        ###
-                        if(checkGhe):
-                            ticket = Ticket(str(uuid.uuid4())[0:6],
-                                            rooms[int(sc) - 1].phongChieu.tenPhong,
-                                            danhSachPhim[int(p) - 1].tenPhim,
-                                            rooms[int(sc) - 1].thoiGian.thoigian,
-                                            choNgoi,
-                                            danhSachPhim[int(p) - 1].loaiPhim,
-                                            getPrice(danhSachPhim[int(p) - 1].loaiPhim, rooms[int(sc) - 1].thoiGian.thoigian)
-                                            )
-                            manageTicket.banVeMoi(ticket)
-                        ###
-                        else:
-                            print("Ghế không tồn tại")
-                        manageTicket.getAllTickets()
-                    else:
+                        if inGhe(rooms[int(sc) - 1].gheNgoi) == 1: #Chưa có check
+                            choNgoi = input("Nhập Chỗ Ngồi: ").upper()
+                            checkGhe = False
+                            #Hàm
+                            for gh in rooms[int(sc) - 1].gheNgoi:
+                                if choNgoi == gh.maGhe and gh.trangThai == 0:
+                                    gh.trangThai = 1
+                                    checkGhe = True
+                                    break
+                            ###
+                            if(checkGhe):
+                                ticket = Ticket(str(uuid.uuid4())[0:6],
+                                                rooms[int(sc) - 1].phongChieu.tenPhong,
+                                                danhSachPhim[int(p) - 1].tenPhim,
+                                                rooms[int(sc) - 1].thoiGian.thoigian,
+                                                choNgoi,
+                                                danhSachPhim[int(p) - 1].loaiPhim,
+                                                getPrice(danhSachPhim[int(p) - 1].loaiPhim, rooms[int(sc) - 1].thoiGian.thoigian)
+                                                )
+                                manageTicket.banVeMoi(ticket)
+                            ###
+                            else:
+                                print("Ghế không tồn tại")
+                            manageTicket.getAllTickets()
+                    elif not isInteger(sc):
                         print("Suất chiếu là một số nguyên")
+                    else:
+                        print("Suất chiếu không tồn tại")
             else:
                 print("Lựa Chọn Không Tồn Tại!!!")
     elif select == "2":
