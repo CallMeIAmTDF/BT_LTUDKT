@@ -292,30 +292,31 @@ class ManageTicket:
             i += 1
         print(t)
     def searchByTime(self):
+        flag = 1
         l = []
-        start = input("Nhập thời gian bắt đầu (mặc định là thời gian hiện tại (Định dạng hh:mm)): ")
-        end = input("Nhập thời gian kết thúc (mặc định là 23:59 (Định dạng hh:mm)): ")
-        if not timeCheck(start):
+        start = input("Phim bắt đầu từ (mặc định là 08:00 (Định dạng hh:mm)): ")
+        end = input("đến (mặc định là 23:59 (Định dạng hh:mm)): ")
+        if start == "":
             start = NOW
-        if not timeCheck(end):
+        if end == "":
             end = "23:59"
-        if timeCompare(NOW, start):
-            start = NOW
-        if timeCompare(start, end):
-            start = NOW
-            end = "23:59"
-        for i in danhSachThoiGianPhongChieu:
-            if not timeCompare(start, i.thoiGian.thoigian) and not timeCompare(i.thoiGian.thoigian, end):
-                if len([x for x in i.gheNgoi if x.trangThai == 0]) != 0:
-                    l.append(i)
-        if len(l) == 0:
-            print("Không Có Phim Nào Trong Khoảng Thời Gian Này")
+        if not timeCheck(start) or not timeCheck(end) or timeCompare(start, end):
+            flag = 0
+        if flag == 0:
+            print("Thời gian không hợp lệ")
         else:
-            l.sort(key=lambda x: x.thoiGian.thoigian)
-            x = PrettyTable(["Tên Phim", "Xuất Chiếu", "Phòng Chiếu", "Số Ghế Còn Trống/Tổng Số Ghế"])
-            for i in l:
-                x.add_row([i.phim.tenPhim, i.thoiGian.thoigian, i.phongChieu.tenPhong, f"{len([z for z in i.gheNgoi if z.trangThai == 0])}/{len([z for z in i.gheNgoi])}"])
-            print(x)
+            for i in danhSachThoiGianPhongChieu:
+                if not timeCompare(start, i.thoiGian.thoigian) and not timeCompare(i.thoiGian.thoigian, end):
+                    if len([x for x in i.gheNgoi if x.trangThai == 0]) != 0:
+                        l.append(i)
+            if len(l) == 0:
+                print("Không Có Phim Nào Trong Khoảng Thời Gian Này")
+            else:
+                l.sort(key=lambda x: x.thoiGian.thoigian)
+                x = PrettyTable(["Tên Phim", "Xuất Chiếu", "Phòng Chiếu", "Số Ghế Còn Trống/Tổng Số Ghế"])
+                for i in l:
+                    x.add_row([i.phim.tenPhim, i.thoiGian.thoigian, i.phongChieu.tenPhong, f"{len([z for z in i.gheNgoi if z.trangThai == 0])}/{len([z for z in i.gheNgoi])}"])
+                print(x)
     def danhSachVeDaHuy(self):
         l = []
         for i in range(len(self.tickets)):
